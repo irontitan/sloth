@@ -7,6 +7,6 @@
 /**
  * Base error for TestToolbox
  */
-export class TestToolboxError extends Error {
+export class SlothError extends Error {
   //
 }

@@ -5,12 +5,12 @@
  */
 
 /** Imports */
-import { TestToolboxError } from '../../../errors/TestToolboxError'
+import { SlothError } from '../../../errors/SlothError'
 
 /**
  * Thrown by `setState` whenever the given state cannot be found
  */
-export class StateNotFoundError extends TestToolboxError {
+export class StateNotFoundError extends SlothError {
   /**
    * @param stateName Name of the state that couldn't be found
    */

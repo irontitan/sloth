@@ -7,24 +7,9 @@
 /** Imports */
 import path from 'path'
 import mongodb, { Db, ObjectId } from 'mongodb'
-import { OneOrMore } from '../../types/OneOrMore'
+import { StateMap, validateStateMap } from './state-map'
 import { MongoMemoryServer } from 'mongodb-memory-server'
-import { StateNotFoundError } from './errors/StateNotFoundError'
-
-/**
- * Defines a collection affected by a state and its data
- */
-export type Content = {
-  collection: string,
-  data: OneOrMore<Record<string, any>>
-}
-
-/**
- * Describes the states file
- */
-export type States = {
-  [ stateName: string ]: Content[]
-}
+import { NoStateMapProvidedError, StateNotFoundError } from './errors'
 
 /**
  * Represents the returned config values for the created database
@@ -36,10 +21,10 @@ export type DatabaseConfig = {
 }
 
 /**
- * Represents the toolbox's database object.
- * @typeparam TStates - The type of you states object
+ * Represents sloth's database object.
+ * @typeparam TStateMap - The type of you states object
  */
-export type Database<TStates extends States> = {
+export type SlothDatabase<TStateMap extends StateMap> = {
   /**
    * Generated configuration for in-memory database connection
    */
@@ -49,7 +34,7 @@ export type Database<TStates extends States> = {
    * database
    * @param stateName - Name of the desired state
    */
-  setState: (stateName: keyof TStates) => Promise<void>
+  setState: (stateName: keyof TStateMap) => Promise<void>
   /**
    * Clears the in-memory database by removing every document from every collection
    */
@@ -57,7 +42,11 @@ export type Database<TStates extends States> = {
   /**
    * Stops the in-memory database server
    */
-  stop: () => Promise<boolean>
+  stop: () => Promise<boolean>,
+  /**
+   * Mongodb's `Db` instance
+   */
+  database: mongodb.Db
 }
 
 /**
@@ -68,7 +57,7 @@ export type Database<TStates extends States> = {
 async function clearDb (db: Db) {
   const collections = await db.listCollections().toArray().then(collections => collections.map(({ name }) => name as string))
 
-  await Promise.all(collections.map(collection => db.collection(collection).remove({})))
+  await Promise.all(collections.map(collection => db.collection(collection).deleteMany({})))
 }
 
 /**
@@ -95,10 +84,9 @@ function prepareContentDataEntry (dataEntry: any) {
  * @param stateName Name of the state to apply
  * @ignore
  */
-async function setDbState (db: Db, states: States, stateName: string) {
-  if (!stateName) throw new StateNotFoundError(stateName)
-
+async function setDbState (db: Db, states: StateMap, stateName: string) {
   const state = states[ stateName ]
+  if (!state) throw new StateNotFoundError(stateName)
 
   await clearDb(db)
 
@@ -118,38 +106,45 @@ async function setDbState (db: Db, states: States, stateName: string) {
  * @param filePath Exploded path of the file to load.
  * **The first parameter should always be __dirname**.
  *
+ * This method does not support custom database instance passing. If you want to
+ * provide a custom MongoMemoryServer, you should use the {@link init} function.
+ * 
  * Passed parameters will be joined using `path.join` to form the full path to
  * the file.
  *
  * *File extensions should not be necessary*
  */
-export async function initFromFile<TStates extends States = any> (...filePath: string[]): Promise<Database<TStates>> {
+export async function initFromFile<TStateMap extends StateMap = any> (...filePath: string[]): Promise<SlothDatabase<TStateMap>> {
   const actualPath = path.resolve(path.join(...filePath))
   const states = require(actualPath)
 
-  return init<TStates>(states)
+  return init<TStateMap>(states)
 }
 
 /**
  * Creates a new instance of {@link Database} with given states available
- * @param states List of states that should be available for the created database instance
+ * @param stateMap List of states that should be available for the created database instance
+ * @param mongoInstance Previously initializated instance of mongodb-memory-server
  * @returns Promise resolving to an instance of {@link Database}
  */
-export async function init<TStates extends States> (states: TStates): Promise<Database<TStates>> {
-  const mongod = new MongoMemoryServer()
+export async function init<TStateMap extends StateMap> (stateMap: TStateMap, mongoInstance?: MongoMemoryServer): Promise<SlothDatabase<TStateMap>> {
+  if (!stateMap) throw new NoStateMapProvidedError()
+  validateStateMap(stateMap)
+  const mongod = mongoInstance || new MongoMemoryServer()
 
   const uri = await mongod.getUri()
   const port = await mongod.getPort()
   const dbName = await mongod.getDbName()
 
-  const connection = await mongodb.connect(uri)
+  const connection = await mongodb.connect(uri, { useNewUrlParser: true, useUnifiedTopology: true })
   const database = connection.db(dbName)
 
   return {
+    database,
     config: { uri, port, dbName },
-    setState: (stateName: keyof TStates) => setDbState(database, states, stateName as string),
     clear: () => clearDb(database),
-    stop: mongod.stop
+    stop: () => { connection.close(); return mongod.stop() },
+    setState: (stateName: keyof TStateMap) => setDbState(database, stateMap, stateName as string)
   }
 }
 
