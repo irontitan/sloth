@@ -21,17 +21,17 @@ It works by receiving a set of states, which you can later activate easily by
 name.
 
 #### Example
-Define one or more states following the `TestToolboxState` interface.
+Define one or more states following the `StateMap` interface.
 
 > This can be done inline, instead of separate file. Keep things apart is,
 > usually, more organized, tho
 
 ```typescript
-import { TestToolboxContent } from '@irontitan/sloth'
+import { Content } from '@irontitan/sloth'
 
 export interface States {
-  userAlreadyExists: TestToolboxContent[],
-  resultsArePaginated: TestToolboxContent[]
+  userAlreadyExists: Content[],
+  resultsArePaginated: Content[]
 }
 
 const states: States = {
@@ -71,23 +71,23 @@ export default states
 ```
 
 On your test file, you can call the `init` function passing said states,
-in order to receive an object implementing the `TestToolboxDatabase` interface.
+in order to receive an object implementing the `SlothDatabase` interface.
 
 After that, whenever you need to change the state of your database, you can call
 the `setState` function, which receives the name of the desired state, and sets
 it for you.
 
 ```typescript
-import toolbox from '@irontitan/sloth'
+import sloth from '@irontitan/sloth'
 import states, { States } from './states'
-import { TestToolboxDatabase } from './src/database'
+import { SlothDatabase } from './src/database'
 
 describe('POST /', () => {
-  let database: TestToolboxDatabase<States>
+  let database: SlothDatabase<States>
   let app: AxiosInstance
 
   before(async () => {
-    database = await toolbox.database.init(states)
+    database = await sloth.database.init(states)
     axiosist(app.factory({ ...config, mongodb: database.config }))
   })
 
