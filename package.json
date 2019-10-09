@@ -1,6 +1,6 @@
 {
   "name": "@irontitan/sloth",
-  "version": "0.1.1",
+  "version": "0.1.2",
   "description": "A simple but useful set of tools to aid NodeJS developers on writing tests.",
   "main": "dist/index.js",
   "directories": {
