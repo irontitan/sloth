@@ -3,6 +3,10 @@
   "version": "0.1.0",
   "description": "",
   "main": "dist/index.js",
+  "directories": {
+    "doc": "docs",
+    "test": "test"
+  },
   "scripts": {
     "test": "mocha -r ts-node/register test/**/*.test.ts",
     "docs": "typedoc",
@@ -41,6 +45,14 @@
     "mongodb": "^3.3.2",
     "mongodb-memory-server": "^5.2.6"
   },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/irontitan/sloth.git"
+  },
+  "bugs": {
+    "url": "https://github.com/irontitan/sloth/issues"
+  },
+  "homepage": "https://github.com/irontitan/sloth#readme",
   "files": [
     "dist/**/*.js",
     "dist/**/*.d.ts"
