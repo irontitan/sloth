@@ -1,6 +1,4 @@
 /**
- * Errors thrown in various situations
- *
  * @module Errors
  */
 

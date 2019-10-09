@@ -1,11 +1,11 @@
-Iron Titan's Sloth
+Sloth
 ====
 
 A simple but useful set of tools to aid NodeJS developers on writing tests.
 
 > This is a WIP. Functionallity is stable, but documentation is not so good yet.
 
-- [Iron Titan's Sloth](#iron-titans-sloth)
+- [Sloth](#sloth)
   - [Usage](#usage)
     - [Database](#database)
       - [Example](#example)

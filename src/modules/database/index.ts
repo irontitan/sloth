@@ -2,9 +2,12 @@
  * Helper functions to aid mocking a mongodb database
  *
  * @module Database
+ * @preferred
  */
 
-/** Imports */
+/**
+ * Imports
+ */
 import path from 'path'
 import mongodb, { Db, ObjectId } from 'mongodb'
 import { StateMap, validateStateMap } from './state-map'
@@ -108,7 +111,7 @@ async function setDbState (db: Db, states: StateMap, stateName: string) {
  *
  * This method does not support custom database instance passing. If you want to
  * provide a custom MongoMemoryServer, you should use the {@link init} function.
- * 
+ *
  * Passed parameters will be joined using `path.join` to form the full path to
  * the file.
  *

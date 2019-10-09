@@ -1,3 +1,8 @@
+/**
+* @module Database
+ */
+
+/** Imports */
 import { SlothError } from '../../../errors/SlothError'
 
 export class NoStateMapProvidedError extends SlothError {

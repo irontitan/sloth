@@ -17,6 +17,7 @@ export type Content = {
 
 /**
  * Describes a mapping of state name to state content
+ *
  * The following JSON Schema describes a valid StateMap
  * ```json
  * {
@@ -64,11 +65,19 @@ export type StateMap = {
   [ stateName: string ]: Content[]
 }
 
+/**
+ * JSON Schema of a state map entry's content
+ * @ignore
+ */
 const CONTENT_SCHEMA = {
   type: 'object',
   minProperties: 1
 }
 
+/**
+ * JSON Schema of a state map
+ * @ignore
+ */
 const SCHEMA = {
   type: 'object',
   patternProperties: {
@@ -93,6 +102,11 @@ const SCHEMA = {
   minProperties: 1
 }
 
+/**
+ * Validates a given object to check if it is a valid state map
+ * @param obj Object to be validated
+ * @ignore
+ */
 export function validateStateMap (obj: any): obj is StateMap {
   const ajv = new Ajv()
   if (ajv.validate(SCHEMA, obj)) return true

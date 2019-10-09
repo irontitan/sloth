@@ -1,3 +1,8 @@
+/**
+* @module Database
+ */
+
+/** Imports */
 import { ErrorObject } from 'ajv'
 import { SlothError } from '../../../errors'
 

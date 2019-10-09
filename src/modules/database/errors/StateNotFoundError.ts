@@ -1,7 +1,5 @@
 /**
- * Errors thrown in various situations
- *
- * @module Database/Errors
+ * @module Database
  */
 
 /** Imports */

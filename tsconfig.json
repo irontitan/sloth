@@ -15,10 +15,11 @@
     "experimentalDecorators": true,
     "emitDecoratorMetadata": true
   },
+  "include": ["src"],
   "typedocOptions": {
     "mode": "modules",
     "out": "docs",
-    "name": "Iron Titan's Test Toolbox",
+    "name": "Sloth",
     "exclude": "src/index.ts",
     "categoryOrder": ["Functions", "*"]
   }
