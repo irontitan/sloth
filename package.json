@@ -1,15 +1,26 @@
 {
   "name": "@irontitan/sloth",
-  "version": "1.0.0",
+  "version": "0.1.0",
   "description": "",
-  "main": "index.js",
+  "main": "dist/index.js",
   "scripts": {
     "test": "mocha -r ts-node/register test/**/*.test.ts",
-    "docs": "typedoc"
+    "docs": "typedoc",
+    "clean": "rm -rf dist",
+    "build": "tsc",
+    "build:clean": "npm run clean && npm run build",
+    "prepare": "npm run build:clean"
   },
-  "keywords": [],
-  "author": "",
-  "license": "ISC",
+  "keywords": [
+    "test",
+    "database",
+    "toolbox",
+    "mock"
+  ],
+  "contributors": [
+    "Rogério Munhoz <hello@rjmunhoz.me>"
+  ],
+  "license": "GPL-3.0-or-later",
   "devDependencies": {
     "@types/chai": "^4.2.3",
     "@types/chai-as-promised": "^7.1.2",
@@ -29,5 +40,9 @@
     "ajv": "^6.10.2",
     "mongodb": "^3.3.2",
     "mongodb-memory-server": "^5.2.6"
-  }
+  },
+  "files": [
+    "dist/**/*.js",
+    "dist/**/*.d.ts"
+  ]
 }
