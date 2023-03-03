@@ -35,7 +35,7 @@
     "mocha": "^6.2.1",
     "sinon": "^7.5.0",
     "ts-node": "^8.4.1",
-    "typedoc": "^0.15.0",
+    "typedoc": "^0.23.26",
     "typedoc-plugin-external-module-name": "^2.1.0",
     "typescript": "^3.6.3"
   },
